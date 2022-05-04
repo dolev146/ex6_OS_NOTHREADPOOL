@@ -10,3 +10,4 @@ myActiveObject.o
 Pipeline.o
 %.o
 .vscode/
+guard
