@@ -11,3 +11,4 @@ Pipeline.o
 %.o
 .vscode/
 guard
+singleton
