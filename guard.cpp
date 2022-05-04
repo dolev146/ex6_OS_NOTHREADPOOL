@@ -10,15 +10,18 @@
 // https://stackoverflow.com/questions/67356331/scoped-lock-with-repeating-arguments
 // https://en.cppreference.com/w/cpp/thread/lock_guard
 // https://www.youtube.com/watch?v=_2rNPXAYa0E
-
 // buld a program that implements a guard design pattern
 // the guard should be able to:
 // 1. only allow one thread to enter a function and update a global pointer
 // does it possible to use a guard like this to protect strtok
 // instead of strtok_r
 // write the  answer in comments:
-// 1. yes
-// 2. no
+// 1. NO 
+// it is not possible to use a guard to protect strtok
+// because if a the threads can enter the function in a different order then 
+// exptected and it can cause a output that is not as expected 
+// link to explenation
+// https://stackoverflow.com/questions/20820937/strtok-function-and-multithreading
 
 #include "pthread.h"
 #include <iostream>
@@ -36,7 +39,7 @@
 
 /*****
  *
- * Example1:
+ * Example:
  * here we have a global pointer that is only updated by one thread
  * the other threads will try to update the pointer but will fail
  * because the pointer is already updated by another thread
@@ -58,14 +61,11 @@ void *update_global_pointer()
          std::scoped_lock lockGuard(guard_mutex);
     */
 
-    // Code that belong to Example1
+    // Code that belong to Example
     std::lock_guard<std::mutex> lockGuard(guard_mutex);
     void *local_pointer = (void *)malloc(sizeof(int));
     global_pointer = local_pointer;
     shared_value = shared_value + 1;
-
-    
-
     return global_pointer;
 }
 
