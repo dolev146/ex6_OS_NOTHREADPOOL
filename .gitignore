@@ -12,3 +12,4 @@ Pipeline.o
 .vscode/
 guard
 singleton
+pollserver
