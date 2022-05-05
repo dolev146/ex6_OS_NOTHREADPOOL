@@ -30,10 +30,9 @@ void destroyAO(struct activeobject *ao_param){
     // pthread_cancel(ao_param->thread);
     // NdestroyQ(ao_param->queue);
     // free(ao_param);
-
-
-
-    // TODO
+    // we dont do malloc so we dont need free for the function pointer
+    // https://stackoverflow.com/questions/26018028/free-array-of-function-pointers
+    free(ao_param);
     return;
     
 }
