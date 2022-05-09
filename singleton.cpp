@@ -1,5 +1,7 @@
 // question 5
 // https://refactoring.guru/design-patterns/singleton/cpp/example#example-1
+// https://stackoverflow.com/questions/72132929/how-to-test-a-singleton-generic-template-to-be-thread-safe
+// https://codereview.stackexchange.com/questions/173929/modern-c-singleton-template
 #include <iostream>
 #include <string>
 #include <vector>
@@ -7,162 +9,63 @@
 #include <mutex>
 #include <thread>
 #include <chrono>
+#include <iostream>
+#include <memory>
 
-// /**
-//  * The Singleton class defines the `GetInstance` method that serves as an
-//  * alternative to constructor and lets clients access the same instance of this
-//  * class over and over.
-//  */
-// template <typename T>
-// class Singleton
-// {
-
-//     /**
-//      * The Singleton's constructor/destructor should always be private to
-//      * prevent direct construction/desctruction calls with the `new`/`delete`
-//      * operator.
-//      */
-// private:
-//     static Singleton *pinstance_;
-//     static std::mutex mutex_;
-
-// protected:
-//     Singleton(const T value) : value_(value)
-//     {
-//     }
-//     ~Singleton() {}
-//     T value_;
-
-// public:
-//     /**
-//      * Singletons should not be cloneable.
-//      */
-//     Singleton(Singleton &other) = delete;
-//     /**
-//      * Singletons should not be assignable.
-//      */
-//     void operator=(const Singleton &) = delete;
-//     /**
-//      * This is the static method that controls the access to the singleton
-//      * instance. On the first run, it creates a singleton object and places it
-//      * into the static field. On subsequent runs, it returns the client existing
-//      * object stored in the static field.
-//      */
-
-//     static Singleton *GetInstance(T value)
-//     {
-//         std::lock_guard<std::mutex> lock(mutex_);
-//         if (pinstance_ == nullptr)
-//         {
-//             pinstance_ = new Singleton(value);
-//         }
-//         return pinstance_;
-//     }
-//     /**
-//      * Finally, any singleton should define some business logic, which can be
-//      * executed on its instance.
-//      */
-//     void SomeBusinessLogic()
-//     {
-//         // ...
-//     }
-
-//     T value() const
-//     {
-//         return value_;
-//     }
-
-//     static Singleton *Singleton::pinstance_{nullptr};
-//     static std::mutex Singleton::mutex_;
-// };
-
-// /**
-//  * Static methods should be defined outside the class.
-//  */
-// // template <typename T>
-
-// // template <class T>
-
-// /**
-//  * The first time we call GetInstance we will lock the storage location
-//  *      and then we make sure again that the variable is null and then we
-//  *      set the value. RU:
-//  */
-// g++ -o singleton singleton.cpp
-
-std::mutex guard_mutex;
-
-template <class T>
+/************
+ * Singleton template implementation
+ *
+ *  brief : Singleton template implementation for singleton class with generic type T and with mutex lock for thread safety
+ * functions : getInstance() - returns the singleton instance of the class and creates it if it doesn't exist yet
+ * Destructor : ~Singleton() - destructor for the singleton class
+ * test this class with main()
+ * use valgrind to run the test
+ * first compile the program with g++ -std=c++2a singleton.cpp -o singleton 
+ * then run the program with valgrind --leak-check=full --show-leak-kinds=all ./singleton
+ *
+ * ****************/
+template <typename T>
 class Singleton
 {
-    // private static Singleton obj;
-private:
-    static Singleton *pinstance_;
-    T value;
-    Singleton(T a)
-    {
-        value = a;
-    }
-
 public:
-    void print()
-    {
-        std::cout << value << std::endl;
-    }
+    static T &Instance();
 
-    static Singleton *GetInstance(T value)
+    Singleton(const Singleton &) = delete;
+    Singleton &operator=(const Singleton) = delete;
+
+protected:
+    struct token
     {
-        if (pinstance_ == NULL)
-        {
-            std::lock_guard<std::mutex> lock(guard_mutex);
-            if (pinstance_ == NULL)
-            {
-                pinstance_ = new Singleton(value);
-            }
-        }
-        return pinstance_;
-    }
+    };
+    Singleton() {}
 };
 
-
-void ThreadFoo()
+template <typename T>
+T &Singleton<T>::Instance()
 {
-    // Following code emulates slow initialization.
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    Singleton<std::string> *singleton = Singleton<std::string>::GetInstance("FOO");
-    singleton->print();
+    static const std::unique_ptr<T> instance{new T{token{}}};
+    return *instance;
 }
 
-void ThreadBar()
+class Test final : public Singleton<Test>
 {
-    // Following code emulates slow initialization.
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    Singleton<std::string> *singleton = Singleton<std::string>::GetInstance("BAR");
-    singleton->print();
-}
+public:
+    Test(token) { std::cout << "constructed" << std::endl; }
+    ~Test() { std::cout << "destructed" << std::endl; }
+
+    void use() const { std::cout << "in use" << std::endl; };
+};
 
 int main()
 {
-    std::cout << "If you see the same value, then singleton was reused (yay!\n"
-              << "If you see different values, then 2 singletons were created (booo!!)\n\n"
-              << "RESULT:\n";
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; i++)
+    std::cout << "Entering main()" << std::endl;
     {
-        if ((i % 2) == 0)
-        {
-            // threads.push_back(std::thread(ThreadFoo));
-        }
-        else
-        {
-            threads.push_back(std::thread(ThreadBar));
-        }
+        auto const &t = Test::Instance();
+        t.use();
     }
-
-    for (int i = 0; i < 4; i++)
     {
-        threads[i].join();
+        auto const &t = Test::Instance();
+        t.use();
     }
-
-    return 0;
+    std::cout << "Leaving main()" << std::endl;
 }
