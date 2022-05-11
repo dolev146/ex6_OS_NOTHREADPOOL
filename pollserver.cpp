@@ -1,5 +1,8 @@
 /*
 ** pollserver.c -- a cheezy multiperson chat server
+    compile with -pthread -lpthread -lpoll -lm -lcrypto -lssl
+    run with ./pollserver
+    g++ -pthread -lpthread pollserver.cpp -o pollserver ; ./pollserver
 */
 
 #include <stdio.h>
@@ -13,7 +16,7 @@
 #include <netdb.h>
 #include <poll.h>
 
-#define PORT "5007" // Port we're listening on
+#define PORT "9034" // Port we're listening on
 
 // Get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa)
@@ -66,13 +69,13 @@ int get_listener_socket(void)
         break;
     }
 
-    freeaddrinfo(ai); // All done with this
-
     // If we got here, it means we didn't get bound
     if (p == NULL)
     {
         return -1;
     }
+
+    freeaddrinfo(ai); // All done with this
 
     // Listen
     if (listen(listener, 10) == -1)
@@ -91,7 +94,7 @@ void add_to_pfds(struct pollfd *pfds[], int newfd, int *fd_count, int *fd_size)
     {
         *fd_size *= 2; // Double it
 
-        *pfds = (struct pollfd *)realloc(*pfds, sizeof(**pfds) * (*fd_size));
+        *pfds = (pollfd *)realloc(*pfds, sizeof(**pfds) * (*fd_size));
     }
 
     (*pfds)[*fd_count].fd = newfd;
@@ -108,7 +111,6 @@ void del_from_pfds(struct pollfd pfds[], int i, int *fd_count)
 
     (*fd_count)--;
 }
-// g++ -g -Wall -o pollserver pollserver.cpp
 
 // Main
 int main(void)
@@ -119,7 +121,7 @@ int main(void)
     struct sockaddr_storage remoteaddr; // Client address
     socklen_t addrlen;
 
-    char buf[256]; // Buffer for client data
+    char buf[1024]; // Buffer for client data
 
     char remoteIP[INET6_ADDRSTRLEN];
 
@@ -127,7 +129,7 @@ int main(void)
     // (We'll realloc as necessary)
     int fd_count = 0;
     int fd_size = 5;
-    struct pollfd *pfds = (struct pollfd *)malloc(sizeof *pfds * fd_size);
+    struct pollfd *pfds = (pollfd *)malloc(sizeof *pfds * fd_size);
 
     // Set up and get a listening socket
     listener = get_listener_socket();
@@ -141,8 +143,7 @@ int main(void)
     // Add the listener to set
     pfds[0].fd = listener;
     pfds[0].events = POLLIN; // Report ready to read on incoming connection
-
-    fd_count = 1; // For the listener
+    fd_count = 1;            // For the listener
 
     // Main loop
     for (;;)
@@ -167,7 +168,7 @@ int main(void)
                 {
                     // If listener is ready to read, handle new connection
 
-                    addrlen = sizeof (remoteaddr);
+                    addrlen = sizeof remoteaddr;
                     newfd = accept(listener,
                                    (struct sockaddr *)&remoteaddr,
                                    &addrlen);
@@ -179,7 +180,13 @@ int main(void)
                     else
                     {
                         add_to_pfds(&pfds, newfd, &fd_count, &fd_size);
-
+                        // in this function we got a new connection
+                        // and we add it to the pfds array
+                        // we also need to make a new reactor for it
+                        // and install the reactor 
+                        // add a handler function for the new reactor
+                        // and add remove handler function for the new reactor
+                        // and test that this is working :)
                         printf("pollserver: new connection from %s on "
                                "socket %d\n",
                                inet_ntop(remoteaddr.ss_family,
