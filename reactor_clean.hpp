@@ -10,7 +10,9 @@
 #include <thread>
 
 using namespace std;
-// g++ reactor_clean.hpp -o reactor_clean -std=c++2a -Wall -Wextra -Werror -pedantic -O3 -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC
+// g++ reactor_clean.hpp -o reactor_clean -std=c++2a -Wall -Wextra -Werror 
+// -pthread -o reactor_clean ; ./reactor_clean
+// https://softwareengineering.stackexchange.com/questions/382195/is-it-okay-to-start-a-thread-from-within-a-constructor-of-a-class
 // http://www.kegel.com/c10k.html
 
 class Reactor
