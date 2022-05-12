@@ -15,6 +15,10 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <poll.h>
+#include <errno.h>
+#include <signal.h>
+#include <pthread.h>
+#include "reactor_clean.hpp"
 
 #define PORT "9034" // Port we're listening on
 
@@ -183,10 +187,13 @@ int main(void)
                         // in this function we got a new connection
                         // and we add it to the pfds array
                         // we also need to make a new reactor for it
-                        // and install the reactor 
+                        // and install the reactor
                         // add a handler function for the new reactor
                         // and add remove handler function for the new reactor
                         // and test that this is working :)
+
+                        Reactor *reactor = (Reactor *)newReactor();
+
                         printf("pollserver: new connection from %s on "
                                "socket %d\n",
                                inet_ntop(remoteaddr.ss_family,

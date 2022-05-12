@@ -16,10 +16,10 @@
 // does it possible to use a guard like this to protect strtok
 // instead of strtok_r
 // write the  answer in comments:
-// 1. NO 
+// 1. NO
 // it is not possible to use a guard to protect strtok
-// because if a the threads can enter the function in a different order then 
-// exptected and it can cause a output that is not as expected 
+// because if a the threads can enter the function in a different order then
+// exptected and it can cause a output that is not as expected
 // link to explenation
 // https://stackoverflow.com/questions/20820937/strtok-function-and-multithreading
 
@@ -50,10 +50,12 @@
  *****/
 
 void *global_pointer;
-static int shared_value = 0;
+int shared_value = 0;
+// TODO , decide if static or not
+// static int shared_value = 0;
 std::mutex guard_mutex;
 
-void *update_global_pointer()
+void *update_global_pointer(void *arg)
 {
 
     /*
@@ -63,26 +65,45 @@ void *update_global_pointer()
 
     // Code that belong to Example
     std::lock_guard<std::mutex> lockGuard(guard_mutex);
+    for (int m = 0; m < 1000000; m++)
+    {
+        shared_value++;
+    }
+    int b = *(int *)arg;
+    b++;
     void *local_pointer = (void *)malloc(sizeof(int));
     global_pointer = local_pointer;
-    shared_value = shared_value + 1;
     return global_pointer;
 }
 
 int main()
 {
+    // compile the code
+    // g++ -std=c++2a -Wall -Wextra -Werror  -pthread  guard.cpp -o guard ; ./guard
     std::cout << "global_pointer: " << global_pointer << std::endl;
     std::cout << "shared_value: " << shared_value << std::endl;
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 1000; i++)
+    pthread_t th[4];
+    int i = 0;
+    int x = 0;
+    for (i = 0; i < 4; i++)
     {
-        threads.push_back(std::thread(update_global_pointer));
+        pthread_create(&th[i], NULL, update_global_pointer, &x);
+    }
+    for (i = 0; i < 4; i++)
+    {
+        pthread_join(th[i], NULL);
     }
 
-    for (int i = 0; i < 1000; i++)
-    {
-        threads[i].join();
-    }
+    // std::vector<std::thread> threads;
+    // for (int i = 0; i < 10000; i++)
+    // {
+    //     threads.push_back(std::thread(update_global_pointer));
+    // }
+
+    // for (int i = 0; i < 1000; i++)
+    // {
+    //     threads[i].join();
+    // }
     std::cout << "after join" << std::endl;
     std::cout << "global_pointer: " << global_pointer << std::endl;
     std::cout << "shared_value: " << shared_value << std::endl;
