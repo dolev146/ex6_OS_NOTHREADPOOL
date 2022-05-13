@@ -225,7 +225,6 @@ int main(void)
 void *handle_new_connection(void *arg)
 {
     args_params *args = (args_params *)arg;
-    Reactor *reactor = args->reactor;
     int newfd = args->filedescriptor;
     for (;;)
     {
@@ -244,7 +243,7 @@ void *handle_new_connection(void *arg)
             }
 
             close(newfd); // Bye!
-            break;
+            return NULL;
         }
         else
         {
@@ -266,4 +265,5 @@ void *handle_new_connection(void *arg)
             }
         }
     }
+    return NULL;
 }

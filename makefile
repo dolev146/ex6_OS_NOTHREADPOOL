@@ -1,8 +1,7 @@
 CC=g++
 CFlags=-g -Wall -lpthread -std=c++2a
 Main1OBJ=main1.o myqueue.o blockqueue.o myActiveObject.o Pipeline.o
-# all:clean clienttest client main1 guard singleton reactor
-all:reactor
+all:clean clienttest client main1 guard singleton reactor
 
 reactor:reactor.o pollserver.o pollclient pollclientsend
 	g++ -o reactor reactor.o pollserver.o -lpthread
@@ -29,7 +28,7 @@ guard:guard.cpp
 	$(CC) $(CFlags) -o guard guard.cpp -lpthread 
 
 main1: $(Main1OBJ)
-	$(CC) $(CFlags) -o $@  $^ -lpthread; ./main1
+	$(CC) $(CFlags) -o $@  $^ -lpthread; 
 
 clienttest: clienttest.o
 	$(CC) $(CFlags) -o $@  $^ -lpthread
