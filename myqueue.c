@@ -18,7 +18,7 @@ void NdestroyQ(pmyqueue_t queue)
 
     if (queue->head == NULL)
     {
-        printf("Queue does not exist\n");
+        printf("DEBUG:Queue does not exist\n");
         return;
     }
     pthread_mutex_destroy(&queue->queue_mutex);

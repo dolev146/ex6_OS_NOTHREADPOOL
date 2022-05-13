@@ -440,12 +440,12 @@ int main(int argc, char **argv)
 
     while (true)
     {
-        printf("Waiting for connections... \n");
+        printf("DEBUG:Waiting for connections... \n");
         // wait for and eventually accept an incomming connection
 
         addr_size = sizeof(SA_IN);
         check(client_socket = accept(server_socket, (SA *)&client_addr, (socklen_t *)&addr_size), "accept failed");
-        printf("connected! on socket %d \n", client_socket);
+        printf("DEBUG:connected! on socket %d \n", client_socket);
 
         // do whatever we do with connections.
         // handle_connection(client_socket);
@@ -490,7 +490,7 @@ void *handle_connection(void *p_client_socket)
     free(p_client_socket);
     pthread_mutex_lock(&server_mutex);
     recv(client_socket, client_message, 1024, 0);
-    printf("msg recived on socket %s , %d\n", client_message, client_socket);
+    printf("DEBUG:msg recived on socket %s , %d\n", client_message, client_socket);
     // malloc the memory for copying the client message
     char *msg = (char *)malloc(strlen(client_message) + 1);
     strcpy(msg, client_message);
@@ -501,12 +501,12 @@ void *handle_connection(void *p_client_socket)
     struct activeobject *first_ao1 = (struct activeobject *)pointer_pipeline->first;
     pthread_create(&t1, NULL, first_ao1->firstfunc, (void *)msg);
     pthread_join(t1, NULL);
-    printf("after ao1 %s , %d\n", msg, client_socket);
+    printf("DEBUG:after ao1 %s , %d\n", msg, client_socket);
     pthread_t t2;
     struct activeobject *first_ao2 = (struct activeobject *)pointer_pipeline->second;
     pthread_create(&t2, NULL, first_ao2->firstfunc, (void *)msg);
     pthread_join(t2, NULL);
-    printf("after ao2 %s , %d\n", msg, client_socket);
+    printf("DEBUG:after ao2 %s , %d\n", msg, client_socket);
     pthread_t t3;
     struct activeobject *first_ao3 = (struct activeobject *)pointer_pipeline->third;
     struct sendmsgwithao *strc = (struct sendmsgwithao *)malloc(sizeof(struct sendmsgwithao));
@@ -514,7 +514,7 @@ void *handle_connection(void *p_client_socket)
     strc->socket = client_socket;
     pthread_create(&t3, NULL, first_ao3->firstfunc, (void *)strc);
     pthread_join(t3, NULL);
-    printf("after ao3 %s , %d\n", msg, client_socket);
+    printf("DEBUG:after ao3 %s , %d\n", msg, client_socket);
 
     close(client_socket);
     pthread_mutex_unlock(&server_mutex);

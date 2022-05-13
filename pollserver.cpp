@@ -18,10 +18,12 @@
 #include <errno.h>
 #include <signal.h>
 #include <pthread.h>
-#include "reactor_clean.hpp"
+#include "reactor.hpp"
+#include <pthread.h>
 
 #define PORT "9034" // Port we're listening on
-
+void *handle_new_connection(void *);
+int fd_count;
 // Get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa)
 {
@@ -115,25 +117,25 @@ void del_from_pfds(struct pollfd pfds[], int i, int *fd_count)
 
     (*fd_count)--;
 }
-
+struct pollfd *pfds;
+int listener;
+char buf[1024]; // Buffer for client data
 // Main
 int main(void)
 {
-    int listener; // Listening socket descriptor
+    // Listening socket descriptor
 
     int newfd;                          // Newly accept()ed socket descriptor
     struct sockaddr_storage remoteaddr; // Client address
     socklen_t addrlen;
 
-    char buf[1024]; // Buffer for client data
-
     char remoteIP[INET6_ADDRSTRLEN];
 
     // Start off with room for 5 connections
     // (We'll realloc as necessary)
-    int fd_count = 0;
+    fd_count = 0;
     int fd_size = 5;
-    struct pollfd *pfds = (pollfd *)malloc(sizeof *pfds * fd_size);
+    pfds = (pollfd *)malloc(sizeof *pfds * fd_size);
 
     // Set up and get a listening socket
     listener = get_listener_socket();
@@ -192,63 +194,76 @@ int main(void)
                         // and add remove handler function for the new reactor
                         // and test that this is working :)
 
-                        Reactor *reactor = (Reactor *)newReactor();
-
                         printf("pollserver: new connection from %s on "
                                "socket %d\n",
                                inet_ntop(remoteaddr.ss_family,
                                          get_in_addr((struct sockaddr *)&remoteaddr),
                                          remoteIP, INET6_ADDRSTRLEN),
                                newfd);
+
+                        Reactor *reactor = (Reactor *)newReactor();
+                        // void InstallHandler(Reactor *reactor, void (*funcpointer_param)(void *), int filedescriptor)
+
+                        InstallHandler(reactor, &handle_new_connection, newfd);
                     }
                 }
                 else
                 {
-                    // If not the listener, we're just a regular client
-                    int nbytes = recv(pfds[i].fd, buf, sizeof buf, 0);
-
-                    int sender_fd = pfds[i].fd;
-
-                    if (nbytes <= 0)
-                    {
-                        // Got error or connection closed by client
-                        if (nbytes == 0)
-                        {
-                            // Connection closed
-                            printf("pollserver: socket %d hung up\n", sender_fd);
-                        }
-                        else
-                        {
-                            perror("recv");
-                        }
-
-                        close(pfds[i].fd); // Bye!
-
-                        del_from_pfds(pfds, i, &fd_count);
-                    }
-                    else
-                    {
-                        // We got some good data from a client
-
-                        for (int j = 0; j < fd_count; j++)
-                        {
-                            // Send to everyone!
-                            int dest_fd = pfds[j].fd;
-
-                            // Except the listener and ourselves
-                            if (dest_fd != listener && dest_fd != sender_fd)
-                            {
-                                if (send(dest_fd, buf, nbytes, 0) == -1)
-                                {
-                                    perror("send");
-                                }
-                            }
-                        }
-                    }
                 } // END handle data from client
             }     // END got ready-to-read from poll()
         }         // END looping through file descriptors
     }             // END for(;;)--and you thought it would never end!
 
     return 0;
+}
+
+// create a function to pass to the reactor to handle the new connection
+// this function will be called when the reactor gets a new connection
+// it will be passed the reactor and the new connection
+// it will be responsible for adding the new connection to the reactor
+
+void *handle_new_connection(void *arg)
+{
+    args_params *args = (args_params *)arg;
+    Reactor *reactor = args->reactor;
+    int newfd = args->filedescriptor;
+    for (;;)
+    {
+        int nbytes = recv(newfd, buf, sizeof buf, 0);
+        if (nbytes <= 0)
+        {
+            // Got error or connection closed by client
+            if (nbytes == 0)
+            {
+                // Connection closed
+                printf("pollserver: socket %d hung up\n", newfd);
+            }
+            else
+            {
+                perror("recv");
+            }
+
+            close(newfd); // Bye!
+            break;
+        }
+        else
+        {
+            // We got some good data from a client
+
+            for (int j = 0; j < fd_count; j++)
+            {
+                // Send to everyone!
+                int dest_fd = pfds[j].fd;
+
+                // Except the listener and ourselves
+                if (dest_fd != listener && dest_fd != newfd)
+                {
+                    if (send(dest_fd, buf, nbytes, 0) == -1)
+                    {
+                        perror("send");
+                    }
+                }
+            }
+        }
+    }
 }
