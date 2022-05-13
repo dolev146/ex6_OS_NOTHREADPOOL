@@ -43,4 +43,4 @@ client: client.o
 	$(CC) $(CFlags) -c -o $@  $^ -lpthread
 
 clean:
-	rm -f *.dSYM $(BINS) *.o client clienttest guard singleton reactor reactor1 pollclientlis pollclientsend
+	rm -f *.dSYM $(BINS) *.o client clienttest guard singleton reactor reactor1 pollclientlis pollclientsend main1
