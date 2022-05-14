@@ -20,8 +20,12 @@
  * Destructor : ~Singleton() - destructor for the singleton class
  * test this class with main()
  * use valgrind to run the test
- * first compile the program with g++ -std=c++2a singleton.cpp -o singleton
- * then run the program with valgrind --leak-check=full --show-leak-kinds=all ./singleton
+ * $$$$_____Compile____$$$$
+ * first compile the program with
+ * g++ -std=c++2a singleton.cpp -o singleton
+ * then run the program with
+ * $$$$_____Valgrind____$$$$
+ * valgrind --leak-check=full --show-leak-kinds=all ./singleton
  *
  * ****************/
 template <typename T>
