@@ -20,7 +20,7 @@
  * Destructor : ~Singleton() - destructor for the singleton class
  * test this class with main()
  * use valgrind to run the test
- * first compile the program with g++ -std=c++2a singleton.cpp -o singleton 
+ * first compile the program with g++ -std=c++2a singleton.cpp -o singleton
  * then run the program with valgrind --leak-check=full --show-leak-kinds=all ./singleton
  *
  * ****************/
@@ -50,10 +50,18 @@ T &Singleton<T>::Instance()
 class Test final : public Singleton<Test>
 {
 public:
-    Test(token) { std::cout << "constructed" << std::endl; }
-    ~Test() { std::cout << "destructed" << std::endl; }
-
-    void use() const { std::cout << "in use" << std::endl; };
+    Test(token)
+    {
+        std::cout << "constructed" << std::endl;
+    }
+    ~Test()
+    {
+        std::cout << "destructed" << std::endl;
+    }
+    void use() const
+    {
+        std::cout << "in use" << std::endl;
+    };
 };
 
 int main()

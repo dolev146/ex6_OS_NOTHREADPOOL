@@ -10,6 +10,7 @@
 // https://stackoverflow.com/questions/67356331/scoped-lock-with-repeating-arguments
 // https://en.cppreference.com/w/cpp/thread/lock_guard
 // https://www.youtube.com/watch?v=_2rNPXAYa0E
+// https://en.wikipedia.org/wiki/C10k_problem
 // buld a program that implements a guard design pattern
 // the guard should be able to:
 // 1. only allow one thread to enter a function and update a global pointer
@@ -93,17 +94,6 @@ int main()
     {
         pthread_join(th[i], NULL);
     }
-
-    // std::vector<std::thread> threads;
-    // for (int i = 0; i < 10000; i++)
-    // {
-    //     threads.push_back(std::thread(update_global_pointer));
-    // }
-
-    // for (int i = 0; i < 1000; i++)
-    // {
-    //     threads[i].join();
-    // }
     std::cout << "after join" << std::endl;
     std::cout << "global_pointer: " << global_pointer << std::endl;
     std::cout << "shared_value: " << shared_value << std::endl;

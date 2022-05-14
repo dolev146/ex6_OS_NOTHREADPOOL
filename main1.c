@@ -23,7 +23,7 @@
 // you can use pthread_cond_t and pthread_mutex_t
 // you may use c++ ... we chose to use c
 // so there is no equivalent to new and delete https://stackoverflow.com/questions/2839551/whats-the-equivalent-of-new-delete-of-c-in-c
-
+// ********************** understanding thread pool concept *************************
 // int main()
 // {
 //     int x = 10;
@@ -65,7 +65,7 @@
 //     return 0;
 // }
 
-//***********************************************************************************************************
+//*****************************************___ easier example of using cond and queue for a server ___ but without active object ******************************************************************
 // // gcc -o main main.c -lpthread
 // #include <stdio.h>
 // #include <stdlib.h>
