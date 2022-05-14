@@ -15,7 +15,7 @@ pollclient:pollclientlis.cpp
 
 
 reactor.o:reactor.hpp
-	$(CC) $(CFlags) -c reactor.cpp -o reactor.o
+	$(CC) $(CFlags) -c reactor.cpp -o reactor.o --shared
 
 pollserver.o:reactor.hpp
 	$(CC) $(CFlags) -c pollserver.cpp -o pollserver.o
