@@ -7,20 +7,20 @@ this project is about implementing design patterns
 
 **implemented patterns**
 
-* [[Singleton](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/singleton.cpp)](Singleton (template))
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/reactor.hpp]( Reactor )
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/guard.cpp](Guard)
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/myActiveObject.h](Active Object)
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/Pipeline.h](Pipeline)
+* [Singleton](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/singleton.cpp)](Singleton template)
+* [Reactor](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/reactor.hpp)
+* [Guard](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/guard.cpp)
+* [Active Object](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/myActiveObject.h)
+* [Pipeline](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/Pipeline.h)
 
 also need to implement a Queue that uses cond when waiting to deQ
 
 **QUEUE implemented methods**
 
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/blockqueue.c#L22](deQ( );)
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/blockqueue.c#L22](enQ( );)
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/blockqueue.c#L39](createQ( );)
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/blockqueue.c#L47](destroyQ( );)
+* [deQ( );](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/blockqueue.c#L22)
+* [enQ( );](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/blockqueue.c#L22)
+* [createQ( );](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/blockqueue.c#L39)
+* [destroyQ( );](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/blockqueue.c#L47)
 
 we used c.
 
@@ -28,29 +28,29 @@ now implement the active object using the Queue.
 
 **Active Object implemented methods**
 
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/myActiveObject.c#L12](newAO( );)
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/myActiveObject.c#L12](destroyAO( );)
+* [newAO( );](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/myActiveObject.c#L12)
+* [destroyAO( );](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/myActiveObject.c#L12)
 
 
 **Guard implemented methods**
 
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/guard.cpp#L10](constructor(pthread_mutex_t );)
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/guard.cpp#L15](destuctor( );)
+* [constructor(pthread_mutex_t );](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/guard.cpp#L10)
+* [destuctor( );](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/guard.cpp#L15)
 
 the constructor lock the pthread_mutex_t
 and the destructor unlock it.
 
 **Singleton template**
 
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/singleton.cpp#L35](Instance( );)
-* [](Destroy( );)
+* [Instance( );](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/singleton.cpp#L35)
+* [Destroy( );]()
 
 
 **Reactor implementing**
 
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/reactor.cpp#L12](newReactor( );)
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/reactor.cpp#L18](InstallHandler( );)
-* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/reactor.cpp#L32](RemoveHandler( );)
+* [newReactor( );](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/reactor.cpp#L12)
+* [InstallHandler( );](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/reactor.cpp#L18)
+* [RemoveHandler( );](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/reactor.cpp#L32)
 
 
 the files will be compiled to shared library
