@@ -33,7 +33,7 @@ class Singleton
 {
 public:
     static T &Instance();
-
+    void Destroy();
     Singleton(const Singleton &) = delete;
     Singleton &operator=(const Singleton) = delete;
 
@@ -49,6 +49,12 @@ T &Singleton<T>::Instance()
 {
     static const std::unique_ptr<T> instance{new T{token{}}};
     return *instance;
+}
+
+template <typename T>
+void Singleton<T>::Destroy()
+{
+    delete &Instance();
 }
 
 
