@@ -38,8 +38,24 @@
 #include <functional>
 #include <cassert>
 
+class Guard
+{
+public:
+    pthread_mutex_t *m_mutex;
+    Guard(pthread_mutex_t *m_mutex)
+    {
+        this->m_mutex = m_mutex;
+        pthread_mutex_lock(this->m_mutex);
+    }
+    ~Guard()
+    {
+        pthread_mutex_unlock(this->m_mutex);
+    }
+};
+
 /*****
- *
+ * took the example from here
+ * https://www.youtube.com/watch?v=oq29KUy29iQ&t=473s
  * Example:
  * here we have a global pointer that is only updated by one thread
  * the other threads will try to update the pointer but will fail
@@ -56,6 +72,8 @@ int shared_value = 0;
 // static int shared_value = 0;
 std::mutex guard_mutex;
 
+pthread_mutex_t C_lang_guard_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 void *update_global_pointer(void *arg)
 {
 
@@ -65,7 +83,9 @@ void *update_global_pointer(void *arg)
     */
 
     // Code that belong to Example
-    std::lock_guard<std::mutex> lockGuard(guard_mutex);
+    // std::lock_guard<std::mutex> lockGuard(guard_mutex);
+
+    Guard myguard = Guard(&C_lang_guard_mutex);
     for (int m = 0; m < 1000000; m++)
     {
         shared_value++;
