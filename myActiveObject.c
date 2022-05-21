@@ -15,8 +15,6 @@ struct activeobject *newAO(pmyqueue_t *queueparam, void *(*firstfunc)(void *), v
     ao->queue = *queueparam;
     ao->firstfunc = firstfunc;
     ao->secondfunc = secondfunc;
-    // TODO! 
-    // ask netzer if i need also to craete a thread here ? 
     return ao;
 }
 

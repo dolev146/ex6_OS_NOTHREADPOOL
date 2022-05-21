@@ -1,12 +1,13 @@
 #ifndef ActiveObject
 #define ActiveObject
 #include "blockqueue.h"
-
+#include "pthread.h"
 struct activeobject
 {
     pmyqueue_t queue;
     void *(*firstfunc)(void *);
     void *(*secondfunc)(void *);
+    pthread_t aothread;
 };
 
 // void newAO() will get 3 parameters:
