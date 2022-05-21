@@ -7,20 +7,20 @@ this project is about implementing design patterns
 
 **implemented patterns**
 
-* Singleton (template singleton)
-* Reactor* 
-* Guard
-* Active Object
-* Pipeline
+* [[Singleton](https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/singleton.cpp)](Singleton (template))
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/reactor.hpp]( Reactor )
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/guard.cpp](Guard)
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/myActiveObject.h](Active Object)
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/Pipeline.h](Pipeline)
 
 also need to implement a Queue that uses cond when waiting to deQ
 
 **QUEUE implemented methods**
 
-* deQ( );
-* enQ( );
-* createQ( );
-* destroyQ( );
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/blockqueue.c#L22](deQ( );)
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/blockqueue.c#L22](enQ( );)
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/blockqueue.c#L39](createQ( );)
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/blockqueue.c#L47](destroyQ( );)
 
 we used c.
 
@@ -28,29 +28,29 @@ now implement the active object using the Queue.
 
 **Active Object implemented methods**
 
-* newAO( );
-* destroyAO( );
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/myActiveObject.c#L12](newAO( );)
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/myActiveObject.c#L12](destroyAO( );)
 
 
 **Guard implemented methods**
 
-* constructor(pthread_mutex_t );
-* destuctor( );
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/guard.cpp#L10](constructor(pthread_mutex_t );)
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/guard.cpp#L15](destuctor( );)
 
 the constructor lock the pthread_mutex_t
 and the destructor unlock it.
 
 **Singleton template**
 
-* Instance( );
-* Destroy( );
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/singleton.cpp#L35](Instance( );)
+* [](Destroy( );)
 
 
 **Reactor implementing**
 
-* newReactor( );
-* InstallHandler( );
-* RemoveHandler( );
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/reactor.cpp#L12](newReactor( );)
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/reactor.cpp#L18](InstallHandler( );)
+* [https://github.com/dolev146/ex6_OS_NOTHREADPOOL/blob/main/reactor.cpp#L32](RemoveHandler( );)
 
 
 the files will be compiled to shared library
