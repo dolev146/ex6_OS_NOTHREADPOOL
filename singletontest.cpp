@@ -13,6 +13,7 @@
 #include <iostream>
 #include <memory>
 #include "singleton.cpp"
+#include "assert.h"
 
 /************
  * Singleton template implementation
@@ -49,14 +50,21 @@ public:
 
 int main()
 {
+    void *p1;
+    void *p2;
     std::cout << "Entering main()" << std::endl;
     {
         auto const &t = Test::Instance();
         t.use();
+        p1 = (void *)&t;
     }
     {
         auto const &t = Test::Instance();
         t.use();
+        p2 = (void *)&t;
     }
+
+    assert(p1 == p2);
+
     std::cout << "Leaving main()" << std::endl;
 }

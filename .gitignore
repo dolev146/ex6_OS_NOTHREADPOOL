@@ -25,3 +25,5 @@ guardtest
 guard.o
 libex6.so
 singleton.o
+guardtest.o
+singletontest

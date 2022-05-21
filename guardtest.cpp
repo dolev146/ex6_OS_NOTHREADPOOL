@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <functional>
 #include <cassert>
+#include "assert.h"
 #include "guard.cpp"
 
 /*****
@@ -83,6 +84,29 @@ void *update_global_pointer(void *arg)
     return global_pointer;
 }
 
+void *update_global_pointer_no_guard(void *arg)
+{
+
+    /*
+        we can use a scoped_lock to protect the global pointer or we can use a lock_guard
+         std::scoped_lock lockGuard(guard_mutex);
+    */
+
+    // Code that belong to Example
+    // std::lock_guard<std::mutex> lockGuard(guard_mutex);
+
+    // Guard myguard = Guard(&C_lang_guard_mutex);
+    for (int m = 0; m < 1000000; m++)
+    {
+        shared_value++;
+    }
+    int b = *(int *)arg;
+    b++;
+    void *local_pointer = (void *)malloc(sizeof(int));
+    global_pointer = local_pointer;
+    return global_pointer;
+}
+
 int main()
 {
     // compile the code
@@ -103,4 +127,30 @@ int main()
     std::cout << "after join" << std::endl;
     std::cout << "global_pointer: " << global_pointer << std::endl;
     std::cout << "shared_value: " << shared_value << std::endl;
+    int first_result = shared_value;
+
+    printf("\n\n\n NO GUARD! see the diffrent results \n\n\n");
+
+    global_pointer = NULL;
+    shared_value = 0;
+    std::cout << "global_pointer: " << global_pointer << std::endl;
+    std::cout << "shared_value: " << shared_value << std::endl;
+    pthread_t th2[4];
+    i = 0;
+    x = 0;
+    for (i = 0; i < 4; i++)
+    {
+        pthread_create(&th2[i], NULL, update_global_pointer_no_guard, &x);
+    }
+    for (i = 0; i < 4; i++)
+    {
+        pthread_join(th2[i], NULL);
+    }
+    std::cout << "after join" << std::endl;
+    std::cout << "global_pointer: " << global_pointer << std::endl;
+    std::cout << "shared_value: " << shared_value << std::endl;
+
+    int second_result = shared_value;
+
+    assert(first_result > second_result);
 }
