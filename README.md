@@ -8,7 +8,7 @@
 
 A brief description of what this project does and who it's for
 
-![image]()
+
 [![IMAGE ALT TEXT HERE](https://user-images.githubusercontent.com/62290677/169662935-c8e019cc-17ef-4984-8ce0-792a7ede9096.png)](https://www.youtube.com/watch?v=dRJ1sNYKU78)
 
 this project is about implementing design patterns 
