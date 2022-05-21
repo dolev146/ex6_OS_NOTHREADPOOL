@@ -26,13 +26,14 @@ struct activeobject *newAO(pmyqueue_t *queueparam, void *(*firstfunc)(void *), v
  *
  */
 
-void destroyAO(struct activeobject *ao_param){
+void destroyAO(struct activeobject *ao_param)
+{
     // pthread_cancel(ao_param->thread);
     // NdestroyQ(ao_param->queue);
     // free(ao_param);
     // we dont do malloc so we dont need free for the function pointer
     // https://stackoverflow.com/questions/26018028/free-array-of-function-pointers
+    pthread_cancel(ao_param->aothread);
     free(ao_param);
     return;
-    
 }
