@@ -14,7 +14,7 @@ void *cientThread(void *arg)
     printf("In thread\n");
     char message[1024];
 
-    char buffer[1024];
+ 
     int clientSocket;
     struct sockaddr_in serverAddr;
     socklen_t addr_size;
@@ -77,7 +77,7 @@ void *cientThreadaaa(void *arg)
     printf("In thread\n");
     char message[1024];
 
-    char buffer[1024];
+
     int clientSocket;
     struct sockaddr_in serverAddr;
     socklen_t addr_size;

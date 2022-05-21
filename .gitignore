@@ -21,3 +21,7 @@ pollclient
 pollclient.o
 pollclientlis
 pollclientsend
+guardtest
+guard.o
+libex6.so
+singleton.o

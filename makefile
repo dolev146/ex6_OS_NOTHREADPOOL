@@ -1,46 +1,47 @@
-CC=g++
-CFlags=-g -Wall -lpthread -std=c++2a
-Main1OBJ=main1.o myqueue.o blockqueue.o myActiveObject.o Pipeline.o
-all:clean clienttest client main1 guard singleton reactor
+all:clean client clienttest pollclientsend pollclientlis buildOfiles buildshared main1.o pollserver.o main1 pollserver guardtest.o guardtest singletontest
 
-reactor:reactor.o pollserver.o pollclient pollclientsend
-	g++ -o reactor reactor.o pollserver.o -lpthread
+buildOfiles:
+	g++ -fpic -c -Wall myqueue.c myActiveObject.c Pipeline.c blockqueue.c reactor.cpp guard.cpp singleton.cpp -lpthread
 
-pollclientsend: pollclientsend.cpp
-	$(CC) $(CFlags) -o pollclientsend pollclientsend.cpp -lpthread
+buildshared:
+	g++ -o libex6.so myqueue.o myActiveObject.o Pipeline.o blockqueue.o reactor.o guard.o singleton.o -fpic -shared  -lpthread
 
+main1.o:
+	g++ -o main1.o main1.c -c -lpthread
 
-pollclient:pollclientlis.cpp
-	$(CC) $(CFlags) pollclientlis.cpp -o pollclientlis -lpthread
+main1:
+	g++ -o main1 main1.o ./libex6.so -lpthread
 
+pollclientsend:
+	g++ -o pollclientsend pollclientsend.cpp -lpthread
 
-reactor.o:reactor.hpp
-	$(CC) $(CFlags) -c reactor.cpp -o reactor.o --shared
+pollclientlis:
+	g++ -o pollclientlis pollclientlis.cpp -lpthread
 
-pollserver.o:reactor.hpp
-	$(CC) $(CFlags) -c pollserver.cpp -o pollserver.o
+pollserver.o:
+	g++ -o pollserver.o -c pollserver.cpp -lpthread 
 
+pollserver:
+	g++ -o pollserver pollserver.o ./libex6.so -lpthread
+
+guardtest.o:
+	g++ -o guardtest.o -c guardtest.cpp -lpthread
+
+guardtest:
+	g++ -o guardtest guardtest.o ./libex6.so -lpthread
+
+singleton.o:
+	g++ -o singleton.o -c singletontest.cpp -lpthread
 
 singleton:
-	$(CC) -o singleton singleton.cpp $(CFlags)
+	g++ -o singleton singleton.o ./libex6.so -lpthread
 
-guard:guard.cpp
-	$(CC) $(CFlags) -o guard guard.cpp -lpthread 
+clienttest:
+	g++ -g -Wall -o clienttest clienttest.c -lpthread
 
-main1: $(Main1OBJ)
-	$(CC) $(CFlags) -o $@  $^ -lpthread; 
-
-clienttest: clienttest.o
-	$(CC) $(CFlags) -o $@  $^ -lpthread
-
-client: client.o
-	$(CC) $(CFlags) -o $@  $^ -lpthread
-
-%: %.c
-	$(CC) $(CFlags) -c -o $@  $^ -lpthread
-
-%: %.cpp
-	$(CC) $(CFlags) -c -o $@  $^ -lpthread
+client:
+	g++ -g -Wall -o client client.c -lpthread
 
 clean:
-	rm -f *.dSYM $(BINS) *.o client clienttest guard singleton reactor reactor1 pollclientlis pollclientsend main1
+	rm -f client clienttest pipeline Pipeline myqueue myActiveObject blockedq *.o *.so main1 libmath.so.1.2.3 pollclientlis pollclientsend pollserver
+

@@ -1,3 +1,4 @@
+
 // question 5
 // https://refactoring.guru/design-patterns/singleton/cpp/example#example-1
 // https://stackoverflow.com/questions/72132929/how-to-test-a-singleton-generic-template-to-be-thread-safe
@@ -11,6 +12,7 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include "singleton.cpp"
 
 /************
  * Singleton template implementation
@@ -28,27 +30,33 @@
  * valgrind --leak-check=full --show-leak-kinds=all ./singleton
  *
  * ****************/
-template <typename T>
-class Singleton
+class Test final : public Singleton<Test>
 {
 public:
-    static T &Instance();
-
-    Singleton(const Singleton &) = delete;
-    Singleton &operator=(const Singleton) = delete;
-
-protected:
-    struct token
+    Test(token)
     {
+        std::cout << "constructed" << std::endl;
+    }
+    ~Test()
+    {
+        std::cout << "destructed" << std::endl;
+    }
+    void use() const
+    {
+        std::cout << "in use " << this << std::endl;
     };
-    Singleton() {}
 };
 
-template <typename T>
-T &Singleton<T>::Instance()
+int main()
 {
-    static const std::unique_ptr<T> instance{new T{token{}}};
-    return *instance;
+    std::cout << "Entering main()" << std::endl;
+    {
+        auto const &t = Test::Instance();
+        t.use();
+    }
+    {
+        auto const &t = Test::Instance();
+        t.use();
+    }
+    std::cout << "Leaving main()" << std::endl;
 }
-
-

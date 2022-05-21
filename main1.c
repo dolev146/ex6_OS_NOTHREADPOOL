@@ -319,7 +319,7 @@ struct sendmsgwithao
 void *ceaser_cipher(void *param)
 {
     char *msg = (char *)param;
-    int i;
+    size_t i;
     for (i = 0; i < strlen(msg); i++)
     {
         if (msg[i] >= 'a' && msg[i] <= 'z')
@@ -346,7 +346,7 @@ void *ceaser_cipher(void *param)
 void *uppertolowerandlowertoupper(void *param)
 {
     char *msg = (char *)param;
-    int i;
+    size_t i;
     for (i = 0; i < strlen(msg); i++)
     {
         if (msg[i] >= 'A' && msg[i] <= 'Z')
@@ -364,7 +364,6 @@ void *uppertolowerandlowertoupper(void *param)
 void *send_message(void *param)
 {
     struct sendmsgwithao *strc = (struct sendmsgwithao *)param;
-    char *msg = strc->message;
     int client_socket = strc->socket;
     printf("DEBUG:before send %s , to socket number %d\n", strc->message, client_socket);
     send(client_socket, strc->message, 1024, 0);
@@ -449,7 +448,6 @@ int main(int argc, char **argv)
 
         // do whatever we do with connections.
         // handle_connection(client_socket);
-        pthread_t t;
         int *pclient = (int *)malloc(sizeof(int));
         *pclient = client_socket;
         struct parameters *enq_args1 = (struct parameters *)malloc(sizeof(struct parameters));
@@ -461,6 +459,9 @@ int main(int argc, char **argv)
     close(server_socket);
     printf("server socket finish  %d", server_socket);
     pthread_mutex_destroy(&server_mutex);
+    destroyAO(pointer_pipeline->first);
+    destroyAO(pointer_pipeline->second);
+    destroyAO(pointer_pipeline->third);
     return 0;
 }
 
@@ -515,7 +516,6 @@ void *handle_connection(void *p_client_socket)
     pthread_create(&t3, NULL, pointer_pipeline->third->firstfunc, (void *)strc);
     pthread_join(t3, NULL);
     printf("DEBUG:after ao3 %s , %d\n", msg, client_socket);
-
     close(client_socket);
     pthread_mutex_unlock(&server_mutex);
     pthread_cancel(pthread_self());

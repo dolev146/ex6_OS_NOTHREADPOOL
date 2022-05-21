@@ -23,7 +23,6 @@ void *deQ(void *arguments)
 {
     struct parameters *args = (struct parameters *)arguments;
     pmyqueue_t queue = args->queue;
-    void *element = args->element;
     pthread_mutex_lock(&queue->queue_mutex);
     void *pointer;
     while ((pointer = NdeQ(queue)) == NULL)
@@ -33,7 +32,6 @@ void *deQ(void *arguments)
         pthread_cond_wait(&queue->condition_var, &queue->queue_mutex);
     }
     printf("DEBUG:deQ: %d , queue number %p \n", *(int *)pointer, queue);
-    element = pointer;
     pthread_mutex_unlock(&queue->queue_mutex);
     return pointer;
 }
