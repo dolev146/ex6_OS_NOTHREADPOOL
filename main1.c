@@ -113,7 +113,7 @@
 // #include <signal.h>
 // #define MAX_LIMIT 1024
 
-// #define SERVERPORT 5007
+// #define SERVERPORT 5008
 // #define BUFSIZE 1024
 // #define SOCKETERROR (-1)
 // #define SERVER_BACKLOG 100
@@ -303,7 +303,7 @@
 #include <stdbool.h>
 #include <limits.h>
 #include <pthread.h>
-#define SERVERPORT 5007
+#define SERVERPORT 5008
 #define SOCKETERROR (-1)
 #define SERVER_BACKLOG 100
 #define THREAD_POOL_SIZE 2
@@ -498,21 +498,21 @@ void *handle_connection(void *p_client_socket)
     // now we will pass the client_message in a pipeline of all three active objects
     // first we will pass it to ceaser cipher
     pthread_t t1;
-    struct activeobject *first_ao1 = (struct activeobject *)pointer_pipeline->first;
-    pthread_create(&t1, NULL, first_ao1->firstfunc, (void *)msg);
+    // struct activeobject *first_ao1 = (struct activeobject *);
+    pthread_create(&t1, NULL, pointer_pipeline->first->firstfunc, (void *)msg);
     pthread_join(t1, NULL);
     printf("DEBUG:after ao1 %s , %d\n", msg, client_socket);
     pthread_t t2;
-    struct activeobject *first_ao2 = (struct activeobject *)pointer_pipeline->second;
-    pthread_create(&t2, NULL, first_ao2->firstfunc, (void *)msg);
+    // struct activeobject *first_ao2 = (struct activeobject *)pointer_pipeline->second;
+    pthread_create(&t2, NULL, pointer_pipeline->second->firstfunc, (void *)msg);
     pthread_join(t2, NULL);
     printf("DEBUG:after ao2 %s , %d\n", msg, client_socket);
     pthread_t t3;
-    struct activeobject *first_ao3 = (struct activeobject *)pointer_pipeline->third;
+    // struct activeobject *first_ao3 = (struct activeobject *)pointer_pipeline->third;
     struct sendmsgwithao *strc = (struct sendmsgwithao *)malloc(sizeof(struct sendmsgwithao));
     strc->message = msg;
     strc->socket = client_socket;
-    pthread_create(&t3, NULL, first_ao3->firstfunc, (void *)strc);
+    pthread_create(&t3, NULL, pointer_pipeline->third->firstfunc, (void *)strc);
     pthread_join(t3, NULL);
     printf("DEBUG:after ao3 %s , %d\n", msg, client_socket);
 

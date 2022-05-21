@@ -58,7 +58,7 @@ void *NdeQ(pmyqueue_t queue)
 {
     if (queue->head == NULL)
     {
-        printf("Queue is empty\n");
+        printf("DEBUG:Queue is empty\n");
         return NULL;
     }
     pnode temp = queue->head;
