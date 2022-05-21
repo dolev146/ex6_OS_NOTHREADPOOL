@@ -5,6 +5,16 @@
 #include <stdlib.h>
 #include <pthread.h>
 
+
+/**
+ *  all commented code are tests and exmaples of code i used in oreder to make the project 
+ *  the code is mostly from ex4 and for testing the pipeline and the active objects
+ * 
+ * @param queue
+ * 
+ * @return
+ */
+ 
 // #include <stdlib.h>
 // #include <stdio.h>
 // #include <pthread.h>
