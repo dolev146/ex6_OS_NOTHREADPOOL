@@ -395,7 +395,7 @@ struct activeobject *ao1;
 struct activeobject *ao2;
 struct activeobject *ao3;
 
-void *handle_connection(void *p_client_socket);
+void *run_pipeline(void *p_client_socket);
 int check(int exp, const char *msg);
 void *thread_function_deq(void *arg);
 
@@ -457,7 +457,7 @@ int main(int argc, char **argv)
         printf("DEBUG:connected! on socket %d \n", client_socket);
 
         // do whatever we do with connections.
-        // handle_connection(client_socket);
+        // run_pipeline(client_socket);
         int *pclient = (int *)malloc(sizeof(int));
         *pclient = client_socket;
         struct parameters *enq_args1 = (struct parameters *)malloc(sizeof(struct parameters));
@@ -481,7 +481,7 @@ void *thread_function_deq(void *arg)
     {
         void *element = deQ(arg);
         pthread_t t;
-        pthread_create(&t, NULL, &handle_connection, element);
+        pthread_create(&t, NULL, &run_pipeline, element);
     }
 }
 
@@ -495,7 +495,7 @@ int check(int exp, const char *msg)
     return exp;
 }
 
-void *handle_connection(void *p_client_socket)
+void *run_pipeline(void *p_client_socket)
 {
     int client_socket = *((int *)p_client_socket);
     free(p_client_socket);
