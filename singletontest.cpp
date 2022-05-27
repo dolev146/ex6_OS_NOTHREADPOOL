@@ -34,12 +34,15 @@
 class Test final : public Singleton<Test>
 {
 public:
+    
+
+
     Test(token)
     {
         std::cout << "constructed" << std::endl;
     }
     ~Test()
-    {
+    { 
         std::cout << "destructed" << std::endl;
     }
     void use() const
@@ -65,7 +68,11 @@ int main()
     }
 
     assert(p1 == p2);
-    
+
+    // this line will call destroy but in the end of the main function
+    // the destructor is also called
+    // so double free will be raised
+    // Test::Destroy();
 
     std::cout << "Leaving main()" << std::endl;
 }

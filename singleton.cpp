@@ -33,7 +33,7 @@ class Singleton
 {
 public:
     static T &Instance();
-    void Destroy();
+    static void Destroy();
     Singleton(const Singleton &) = delete;
     Singleton &operator=(const Singleton) = delete;
 
@@ -55,6 +55,5 @@ template <typename T>
 void Singleton<T>::Destroy()
 {
     delete &Instance();
+    std::cout << "instance destructed  in singleton" << std::endl;
 }
-
-
