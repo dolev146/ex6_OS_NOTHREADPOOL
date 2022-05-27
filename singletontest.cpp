@@ -65,9 +65,7 @@ int main()
     }
 
     assert(p1 == p2);
-/*
-ask erel for the destroy
-*/
+    
 
     std::cout << "Leaving main()" << std::endl;
 }
